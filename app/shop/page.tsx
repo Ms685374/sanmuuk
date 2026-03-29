@@ -45,8 +45,9 @@ export default function ShopPage() {
 
         const response = await fetch(url)
         const data = await response.json()
-        setProducts(data)
-        setFilteredProducts(data)
+        const productList = Array.isArray(data) ? data : []
+        setProducts(productList)
+        setFilteredProducts(productList)
       } catch (error) {
         console.error('Error fetching products:', error)
       } finally {
