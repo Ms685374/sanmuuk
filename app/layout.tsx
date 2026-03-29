@@ -1,12 +1,23 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Playfair_Display, Lora, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { CartProvider } from '@/hooks/use-cart'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import './globals.css'
 
-const _geist = Geist({ subsets: ["latin"] });
+const playfairDisplay = Playfair_Display({ 
+  subsets: ["latin"],
+  weight: ['600', '700'],
+  variable: '--font-playfair'
+});
+
+const lora = Lora({ 
+  subsets: ["latin"],
+  weight: ['400', '500', '600'],
+  variable: '--font-lora'
+});
+
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -47,7 +58,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-sans antialiased">
+      <body className={`${lora.variable} ${playfairDisplay.variable} font-sans antialiased`}>
         <CartProvider>
           <Header />
           <main className="min-h-screen">

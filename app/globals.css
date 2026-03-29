@@ -1,6 +1,5 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lora:wght@400;500;600&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -77,8 +76,8 @@
 }
 
 @theme inline {
-  --font-sans: 'Lora', serif;
-  --font-serif: 'Playfair Display', serif;
+  --font-sans: var(--font-lora), 'Lora', serif;
+  --font-serif: var(--font-playfair), 'Playfair Display', serif;
   --font-mono: 'Geist Mono', 'Geist Mono Fallback';
   --color-background: var(--background);
   --color-foreground: var(--foreground);
