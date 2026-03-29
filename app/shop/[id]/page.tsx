@@ -15,12 +15,13 @@ interface Product {
   name: string
   description: string
   price: number
+  original_price?: number
   category: string
-  image_url: string
-  embroidery_design: string
+  images: string[]
   sizes: string[]
   colors: string[]
   stock: number
+  featured: boolean
 }
 
 export default function ProductDetailPage() {
@@ -71,7 +72,7 @@ export default function ProductDetailPage() {
         quantity,
         size: selectedSize,
         color: selectedColor,
-        image: product.image_url,
+        image: product.images?.[0] || '',
       })
       setAdded(true)
       setTimeout(() => setAdded(false), 2000)
@@ -119,9 +120,9 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Product Image */}
           <div className="relative h-96 md:h-full min-h-96 rounded-lg overflow-hidden sticky top-20">
-            {product.image_url ? (
+            {product.images && product.images.length > 0 ? (
               <Image
-                src={product.image_url}
+                src={product.images[0]}
                 alt={product.name}
                 fill
                 className="object-cover"
@@ -130,8 +131,8 @@ export default function ProductDetailPage() {
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-8xl mb-4">✨</div>
-                  <p className="text-muted-foreground">{product.embroidery_design || 'Premium Embroidered Design'}</p>
+                  <span className="text-8xl mb-4 block">🧵</span>
+                  <p className="text-muted-foreground">Premium Embroidered Design</p>
                 </div>
               </div>
             )}
@@ -153,9 +154,21 @@ export default function ProductDetailPage() {
 
             {/* Price */}
             <div className="border-t border-b border-border py-6">
-              <p className="text-5xl font-serif font-bold text-primary">
-                ${product.price.toFixed(2)}
-              </p>
+              <div className="flex items-center gap-4">
+                <p className="text-5xl font-serif font-bold text-primary">
+                  ${product.price.toFixed(2)}
+                </p>
+                {product.original_price && (
+                  <p className="text-2xl text-muted-foreground line-through">
+                    ${product.original_price.toFixed(2)}
+                  </p>
+                )}
+              </div>
+              {product.original_price && (
+                <p className="text-green-600 font-semibold mt-2">
+                  Save ${(product.original_price - product.price).toFixed(2)}!
+                </p>
+              )}
             </div>
 
             {/* Options */}

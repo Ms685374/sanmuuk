@@ -12,12 +12,13 @@ interface Product {
   name: string
   description: string
   price: number
+  original_price?: number
   category: string
-  image_url: string
-  thumbnail_url?: string
+  images: string[]
   sizes: string[]
   colors: string[]
   stock: number
+  featured: boolean
 }
 
 export default function ShopPage() {
@@ -50,6 +51,8 @@ export default function ShopPage() {
         setFilteredProducts(productList)
       } catch (error) {
         console.error('Error fetching products:', error)
+        setProducts([])
+        setFilteredProducts([])
       } finally {
         setLoading(false)
       }
@@ -116,7 +119,7 @@ export default function ShopPage() {
                   <Card key={i} className="h-80 animate-pulse bg-muted" />
                 ))}
               </div>
-            ) : filteredProducts.length === 0 ? (
+            ) : !Array.isArray(filteredProducts) || filteredProducts.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-lg text-muted-foreground mb-4">
                   No products found in this category
@@ -127,21 +130,26 @@ export default function ShopPage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => (
+                {(Array.isArray(filteredProducts) ? filteredProducts : []).map((product) => (
                   <Link key={product.id} href={`/shop/${product.id}`}>
                     <Card className="group overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
                       {/* Product Image */}
                       <div className="relative h-64 bg-muted overflow-hidden">
-                        {product.image_url ? (
+                        {product.images && product.images.length > 0 ? (
                           <Image
-                            src={product.image_url}
+                            src={product.images[0]}
                             alt={product.name}
                             fill
                             className="object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10 text-4xl">
-                            🎨
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
+                            <span className="text-4xl">🧵</span>
+                          </div>
+                        )}
+                        {product.original_price && (
+                          <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                            SALE
                           </div>
                         )}
                       </div>
@@ -155,9 +163,16 @@ export default function ShopPage() {
                           {product.description}
                         </p>
                         <div className="flex items-center justify-between mt-auto pt-4 border-t border-border">
-                          <span className="text-2xl font-serif font-bold text-primary">
-                            ${product.price.toFixed(2)}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-2xl font-serif font-bold text-primary">
+                              ${product.price.toFixed(2)}
+                            </span>
+                            {product.original_price && (
+                              <span className="text-sm text-muted-foreground line-through">
+                                ${product.original_price.toFixed(2)}
+                              </span>
+                            )}
+                          </div>
                           <span className={`text-xs font-semibold px-2 py-1 rounded ${
                             product.stock > 0
                               ? 'bg-green-100 text-green-800'
